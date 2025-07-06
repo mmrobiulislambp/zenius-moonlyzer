@@ -1,0 +1,6 @@
+{
+  "name": "Zenius Moonlyzer Pro",
+  "description": "An advanced intelligence tool for analyzing CDR, IPDR, LAC, and SMS data. Provides filtering, linking, and visualization for investigations.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

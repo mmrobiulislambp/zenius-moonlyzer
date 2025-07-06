@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zenius Moonlyzer Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                lighter: '#dbeafe', /* Blue-100 (Lighter for backgrounds/hovers) */
+                light: '#60a5fa', /* Blue-400 */
+                DEFAULT: '#3b82f6', /* Blue-500 */
+                dark: '#2563eb', /* Blue-600 */
+                darker: '#1d4ed8', /* Blue-700 */
+              },
+              secondary: {
+                lighter: '#a7f3d0', /* Emerald-200 (Lighter for backgrounds/hovers) */
+                light: '#34d399', /* Emerald-400 */
+                DEFAULT: '#10b981', /* Emerald-500 */
+                dark: '#059669', /* Emerald-600 */
+                darker: '#047857', /* Emerald-700 */
+              },
+              accent: {
+                lighter: '#fef3c7', /* Amber-100 (Lighter for backgrounds/hovers) */
+                light: '#fbbf24', /* Amber-400 */
+                DEFAULT: '#f59e0b', /* Amber-500 */
+                dark: '#d97706', /* Amber-600 */
+                darker: '#b45309', /* Amber-700 */
+              },
+              neutral: {
+                lightest: '#f9fafb', /* Gray-50 */
+                lighter: '#f3f4f6',  /* Gray-100 */
+                light: '#e5e7eb',   /* Gray-200 */
+                DEFAULT: '#6b7280', /* Gray-500 (Main neutral text and icons) */
+                dark: '#4b5563',   /* Gray-600 (Slightly darker neutral text) */
+                darker: '#374151',  /* Gray-700 (Even darker for borders, etc.) */
+                darkest: '#1f2937', /* Gray-800 (For very dark elements like footers) */
+              },
+              background: '#f9fafb', /* UPDATED - Was Slate-50 (#f8fafc), now Gray-50 (#f9fafb) */
+              surface: '#ffffff',    /* White (For cards, modals, main content areas) */
+              textPrimary: '#1f2937', /* Gray-800 (Primary text color for readability) */
+              textSecondary: '#4b5563', /* Gray-600 (Secondary text, placeholders, subtitles) */
+              danger: {
+                lighter: '#fee2e2', /* Red-100 */
+                light: '#fca5a5', /* Red-300 */
+                DEFAULT: '#ef4444', /* Red-500 */
+                dark: '#dc2626',   /* Red-600 */
+                darker: '#b91c1c',   /* Red-700 */
+              },
+              success: {
+                lighter: '#dcfce7', /* Green-100 */
+                light: '#86efac', /* Green-300 */
+                DEFAULT: '#22c55e', /* Green-500 */
+                dark: '#16a34a',   /* Green-600 */
+                darker: '#15803d',   /* Green-700 */
+              },
+              warning: {
+                lighter: '#fef9c3', /* Yellow-100 */
+                light: '#fde047', /* Yellow-300 */
+                DEFAULT: '#eab308', /* Yellow-500 */
+                dark: '#ca8a04',   /* Yellow-600 */
+                darker: '#a16207',   /* Yellow-700 */
+              },
+              info: {
+                lighter: '#e0f2fe', /* Sky-100 */
+                light: '#7dd3fc', /* Sky-300 */
+                DEFAULT: '#0ea5e9', /* Sky-500 */
+                dark: '#0284c7',   /* Sky-600 */
+                darker: '#0369a1',   /* Sky-700 */
+              },
+              focus: '#60a5fa', /* Blue-400 (Consistent focus ring color) */
+            },
+            fontFamily: {
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+            },
+          }
+        }
+      }
+    </script>
+
+    <!-- Google Maps API Script -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD2RbsoOpOXGk56xh_XOwFJK7VBfFBh9aY&libraries=visualization,marker,geocoding,drawing,geometry&callback=initMapApp"></script>
+    <script>
+      function initMapApp() {
+        console.log("Google Maps API loaded with necessary libraries.");
+        window.googleMapsApiLoaded = true;
+      }
+       window.googleMapsApiLoaded = false;
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script type="importmap">
+{
+  "imports": {
+    "@/": "./",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "recharts": "https://esm.sh/recharts@^2.15.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.511.0",
+    "uuid": "https://esm.sh/uuid@^11.1.0",
+    "react-dropzone": "https://esm.sh/react-dropzone@^14.3.8",
+    "cytoscape": "https://esm.sh/cytoscape@^3.28.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.1.0",
+    "lucide": "https://esm.sh/lucide@^0.525.0"
+  }
+}
+</script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  /* Custom scrollbar for webkit browsers */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #e5e7eb; /* scrollbar-thumb-neutral-light */
+    border-radius: 3px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af; /* scrollbar-thumb-neutral-DEFAULT/70 */
+  }
+
+ @media print {
+    /* --- General print setup --- */
+    @page {
+      size: A4 portrait;
+      margin: 1cm; 
+    }
+    html {
+      background: white !important;
+      color: black !important;
+      font-size: 10pt !important;
+    }
+    body {
+      margin: 0 !important; padding: 0 !important;
+      width: auto !important; height: auto !important;
+      overflow: visible !important; /* Default for general printing */
+      -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important;
+    }
+    a { text-decoration: none !important; color: inherit !important; }
+    img, svg { max-width: 100% !important; break-inside: avoid !important; }
+    table { break-inside: auto !important; }
+    tr, td, th { break-inside: avoid-page !important; page-break-inside: avoid !important; }
+    thead { display: table-header-group !important; }
+    tfoot { display: table-footer-group !important; }
+
+    /* --- MFS Modal Specific Print Styles --- */
+    body.printing-mfs-modal,
+    body.printing-mfs-modal #root {
+        visibility: hidden !important; /* Hide body and #root content */
+        background: white !important; /* Ensure background is white */
+        overflow: hidden !important; /* Prevent #root from creating scrollbars on print page */
+        height: 100vh !important; /* Try to make it take up the page height */
+        width: 100vw !important;  /* Try to make it take up the page width */
+        position: static !important; /* Prevent #root from interfering with fixed modal */
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* The modal wrapper itself, needs to become visible and take over the page */
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper {
+      visibility: visible !important; /* Make the wrapper visible */
+      display: block !important;
+      position: absolute !important; /* Take it out of flow, relative to viewport/page */
+      left: 0 !important;
+      top: 0 !important;
+      width: 100% !important; /* Cover full page width */
+      min-height: 100% !important; /* Minimum height of the page */
+      height: auto !important; /* Allow content to define actual height */
+      margin: 0 !important; 
+      padding: 0 !important; /* Padding will be on the content box below */
+      background-color: white !important;
+      z-index: 999999 !important; 
+      overflow: visible !important;
+      transform: none !important; 
+      filter: none !important; 
+    }
+
+    /* The content box inside the modal wrapper, styled for printing */
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content {
+      visibility: visible !important;
+      display: block !important;
+      width: 100% !important; 
+      max-width: 100% !important; 
+      margin: 0 auto !important; /* Center content box */
+      padding: 1cm !important; /* Simulates page margins for the content itself */
+      box-sizing: border-box !important;
+      background-color: white !important; 
+      border: none !important; /* No border for the content area */
+      box-shadow: none !important;
+      position: static !important;
+      page-break-inside: avoid !important; 
+      overflow: visible !important; /* Let content determine flow */
+      min-height: calc(100vh - 2cm); /* Attempt to fill page height minus padding */
+      height: auto;
+    }
+
+    /* All children of the modal content */
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content * {
+      visibility: visible !important;
+      display: revert !important; 
+      position: revert !important; 
+      float: none !important;
+      background-color: transparent !important; 
+      color: black !important; 
+      box-shadow: none !important; 
+      border-style: solid !important; /* Crucial for borders to show */
+      border-width: 0px !important; /* Default to no border, specific classes can override */
+      border-color: transparent !important; /* Default to transparent */
+      filter: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    
+    /* Re-apply borders for specific elements if they are part of the design */
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content .border,
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content .border-neutral-light {
+        border-width: 1px !important;
+        border-color: #cccccc !important; /* A light gray for print borders */
+    }
+     body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content .border-b {
+        border-bottom-width: 1px !important;
+        border-color: #cccccc !important;
+    }
+
+    /* Hide elements marked with .no-print specifically within the modal context */
+    body.printing-mfs-modal .no-print,
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .no-print,
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content .no-print,
+    body.printing-mfs-modal .mfs-contact-detail-modal-print-wrapper .mfs-contact-detail-modal-content .no-print * {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    /* Color overrides (ensure these match your modal's actual Tailwind classes) */
+    body.printing-mfs-modal .text-primary { color: #3b82f6 !important; }
+    body.printing-mfs-modal .text-primary-dark { color: #2563eb !important; }
+    body.printing-mfs-modal .text-textPrimary { color: #1f2937 !important; }
+    body.printing-mfs-modal .text-textSecondary { color: #4b5563 !important; }
+    body.printing-mfs-modal .text-neutral-dark { color: #4b5563 !important; }
+    body.printing-mfs-modal .bg-neutral-lightest { background-color: #f9fafb !important; }
+    body.printing-mfs-modal .text-red-500, body.printing-mfs-modal .text-red-500 svg { color: #ef4444 !important; fill: #ef4444 !important; }
+    body.printing-mfs-modal .text-green-500, body.printing-mfs-modal .text-green-500 svg { color: #22c55e !important; fill: #22c55e !important; }
+    body.printing-mfs-modal .text-blue-500, body.printing-mfs-modal .text-blue-500 svg { color: #3b82f6 !important; fill: #3b82f6 !important; }
+    /* --- END: MFS Modal Specific Print --- */
+
+
+    /* --- START: General Print (when not printing MFS modal) --- */
+    body:not(.printing-mfs-modal) {
+      background: white !important;
+    }
+    body:not(.printing-mfs-modal) .print-hide { /* General class to hide elements in other print views */
+      display: none !important;
+    }
+    body:not(.printing-mfs-modal) #root { /* Ensure #root is visible for general prints */
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    body:not(.printing-mfs-modal) .main-view-container { /* Main content area for general prints */
+        padding: 0 !important; 
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+    /* --- END: General Print --- */
+  }
+
+  /* Google Maps InfoWindow Customization */
+  .gm-style-iw-c { padding: 10px !important; border-radius: 8px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+  .gm-style-iw-d { overflow: auto !important; font-family: 'Inter', sans-serif; font-size: 12px; line-height: 1.5; color: #1f2937; }
+  .gm-style-iw-d strong { color: #3b82f6; font-weight: 600; }
+  .gm-style-iw-t button[title="Close"] { right: 8px !important; top: 8px !important; width: 18px !important; height: 18px !important; opacity: 0.7; }
+  .gm-style-iw-t button[title="Close"]:hover { opacity: 1; background-color: #f3f4f6 !important; }
+</style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background text-textPrimary antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
